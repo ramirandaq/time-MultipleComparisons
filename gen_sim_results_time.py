@@ -394,13 +394,16 @@ def read_fps(file):
     return fp_total, fp_size, total_fingerprints
 
 
-def time_output(t_summary, comp, t_out_name):
+def time_output(t_summary, comp, fp_type, t_out_name):
     if t_out_name:
         pass
     else:
         names = []
         for key in t_summary:
-            name = key.split("_")[0] + "_" + key.split("_")[2] + "_" + key.split("_")[3]
+            if fp_type == "MACCS":
+                name = key.split("_")[0] + "_" + key.split("_")[2]
+            else:
+                name = key.split("_")[0] + "_" + key.split("_")[2] + "_" + key.split("_")[3]
             if name not in names:
                 names.append(name)
         if len(names) == 1:
@@ -459,7 +462,8 @@ if __name__ == "__main__":
             comp = "binary"
         else:
             comp = "n-ary"
-        time_output(t_summary, comp, t_out_name=None)
+        fp_type = "MACCS"
+        time_output(t_summary, comp, fp_type, t_out_name=None)
     else:
         # Fingerprint sizes. The analysis will be ran for every given size.
         fp_sizes = [1000]
@@ -469,7 +473,7 @@ if __name__ == "__main__":
 
         for fp_size in fp_sizes:
             for fp_total in fp_totals:
-                total_fingerprints = gen_fingerprints( fp_total, fp_size )
+                total_fingerprints = gen_fingerprints(fp_total, fp_size)
                 for n in [2, fp_totals[0]]:
                     # n values. Possible values are 2 <= n <= fp_total.
                     results = calc_indices(indices=Indices, fp_total=fp_total,
